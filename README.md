@@ -1,7 +1,7 @@
 <h1 align="center"> Site Loja </h1>
 
 <p align="center">
-Desenvolvido o HTML para o uso de uma loja, com a ajuda da plataforma Rocketseat
+Desenvolvido o HTML para o uso de uma loja, com a ajuda do Mayk Brito da plataforma Rocketseat.
 </p>
 
 <p align="center">
