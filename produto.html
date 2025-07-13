@@ -1,0 +1,141 @@
+<!-- produto.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha seu Produto</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .size-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .size-option {
+            padding: 8px 15px;
+            border: 2px solid #FFD700;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: black;
+        }
+        .size-option:hover {
+            background: #000;
+            color: #FFD700;
+        }
+        .size-option.selected {
+            background: #FFD700;
+            color: black;
+            border-color: black;
+            font-weight: bold;
+        }
+        #comprar-btn {
+            background: black;
+            color: #FFD700;
+            border: 2px solid #FFD700;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #comprar-btn:hover {
+            background: #FFD700;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header style="background: black; color: #FFD700; padding: 20px; text-align: center;">
+        <h1>OUTLET DOS MENOR</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2 id="product-name"></h2>
+            <img id="product-image" src="" alt="" class="imagensvender">
+            <p>Selecione a cor e o tamanho:</p>
+
+            <div class="cores" id="cores-container">
+                <h3>Cores:</h3>
+                <!-- Cores serão inseridas dinamicamente -->
+            </div>
+
+            <div class="tamanhos" id="tamanhos-container">
+                <h3>Tamanhos:</h3>
+                <div class="size-buttons">
+                    <!-- Tamanhos serão inseridos dinamicamente -->
+                </div>
+            </div>
+
+            <button id="comprar-btn" onclick="finalizarCompra()">Finalizar Compra</button>
+        </section>
+    </main>
+
+    <footer style="background: black; color: #FFD700; padding: 15px; text-align: center; margin-top: 20px;">
+        <p>&copy; 2025 OUTLET DOS MENOR. TODOS OS DIREITOS RESERVADOS.</p>
+    </footer>
+
+    <script>
+        function finalizarCompra() {
+            const cor = document.querySelector('input[name="cor"]:checked').value;
+            const selectedSize = document.querySelector('.size-option.selected');
+            if(!selectedSize) {
+                alert('Por favor selecione um tamanho');
+                return;
+            }
+            const tamanho = selectedSize.dataset.value;
+            const nomeProduto = document.getElementById('product-name').textContent;
+            const mensagem = `Olá, gostaria de comprar ${nomeProduto}. Cor: ${cor}, Tamanho: ${tamanho}.`;
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensagem)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Carrega os dados do produto na página
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            document.getElementById('product-name').textContent = params.get('nome');
+            
+            const cores = params.get('cores').split(',');
+            const tamanhos = params.get('tamanhos').split(',');
+            const imagem = params.get('imagem');
+            
+            document.getElementById('product-image').src = imagem;
+            document.getElementById('product-image').alt = params.get('nome');
+
+            const coresContainer = document.getElementById('cores-container');
+            cores.forEach((cor, index) => {
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'cor';
+                radio.value = cor;
+                if(index === 0) radio.checked = true;
+                
+                const label = document.createElement('label');
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(' ' + cor));
+                coresContainer.appendChild(label);
+            });
+
+            const tamanhosContainer = document.querySelector('.size-buttons');
+            tamanhos.forEach((tamanho, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'size-option';
+                button.textContent = tamanho;
+                button.dataset.value = tamanho;
+                button.onclick = function() {
+                    document.querySelectorAll('.size-option').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                };
+                if(index === 0) button.classList.add('selected');
+                tamanhosContainer.appendChild(button);
+            });
+        });
+    </script>
+</body>
+</html>
